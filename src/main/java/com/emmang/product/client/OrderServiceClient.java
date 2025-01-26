@@ -8,6 +8,7 @@ import com.emmang.product.entity.UserDetailsImpl;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -22,22 +23,16 @@ public class OrderServiceClient {
         this.restTemplate = restTemplate;
     }
 
-    public OrderResponseAdminDto fetchOrderAdmin(OrderRequestDto orderRequestDto) {
+    public OrderResponseGuestDto fetchOrderGuest(OrderRequestDto orderRequestDto) {
+        HttpEntity<OrderRequestDto> requestEntity = new HttpEntity<>(orderRequestDto, getHeaders());
         return restTemplate.exchange(
-                RestEndpoint.ORDER_ADMIN_ACCESS_ONLY_URL,
-                HttpMethod.POST,
-                new HttpEntity<>(orderRequestDto, getHeaders()),
-                OrderResponseAdminDto.class
-        ).getBody();
+                RestEndpoint.ORDER_GUEST_ACCESS_ONLY_URL, HttpMethod.POST, requestEntity, OrderResponseGuestDto.class).getBody();
     }
 
-    public OrderResponseGuestDto fetchOrderGuest(OrderRequestDto orderRequestDto) {
+    public OrderResponseAdminDto fetchOrderAdmin(OrderRequestDto orderRequestDto) {
+        HttpEntity<OrderRequestDto> requestEntity = new HttpEntity<>(orderRequestDto, getHeaders());
         return restTemplate.exchange(
-                RestEndpoint.ORDER_GUEST_ACCESS_ONLY_URL,
-                HttpMethod.POST,
-                new HttpEntity<>(orderRequestDto, getHeaders()),
-                OrderResponseGuestDto.class
-        ).getBody();
+                RestEndpoint.ORDER_ADMIN_ACCESS_ONLY_URL, HttpMethod.POST, requestEntity, OrderResponseAdminDto.class).getBody();
     }
 
     private HttpHeaders getHeaders() {
@@ -45,6 +40,7 @@ public class OrderServiceClient {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String role = ((UserDetailsImpl) authentication.getPrincipal()).getAuthorities().get(0).getAuthority();
         String username = ((UserDetailsImpl) authentication.getPrincipal()).getUsername();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         httpHeaders.add("username", username);
         httpHeaders.add("role", role);
         return httpHeaders;

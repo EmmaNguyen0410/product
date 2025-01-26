@@ -30,8 +30,7 @@ public class ProductService {
 
     public String getModifiedOrderName(OrderRequestDto orderRequestDto) {
         try {
-            OrderResponseAdminDto response = orderServiceClient.fetchOrderAdmin(orderRequestDto);
-            return "modified " + response.getName();
+            return orderServiceClient.fetchOrderAdmin(orderRequestDto).getName() + "1";
         } catch (HttpStatusCodeException e) {
             throw new RestTemplateFailureException(e.getMessage());
         }
@@ -39,11 +38,9 @@ public class ProductService {
 
     public String getModifiedOrderQty(OrderRequestDto orderRequestDto) {
         try {
-            OrderResponseGuestDto response = orderServiceClient.fetchOrderGuest(orderRequestDto);
-            return "modified " + (response.getQty() + 1);
+            return orderServiceClient.fetchOrderGuest(orderRequestDto).getQty() + 1 + "";
         } catch (HttpStatusCodeException e) {
             throw new RestTemplateFailureException(e.getMessage());
         }
     }
-
 }

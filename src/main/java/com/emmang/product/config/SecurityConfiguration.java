@@ -25,6 +25,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/product/guest-access-only").hasRole("GUEST")
                         .requestMatchers("/product/admin-access-only").hasRole("ADMIN")
+                        .requestMatchers("/product/test").hasRole("ADMIN")
                         .requestMatchers("/product/admin-access-call-admin-access").hasRole("ADMIN")
                         .requestMatchers("/product/admin-access-call-guest-access").hasRole("ADMIN")
                         .anyRequest().authenticated() // Authenticate all other requests
